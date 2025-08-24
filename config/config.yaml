@@ -1,0 +1,12 @@
+server:
+  useragent: nginx/1.29.1
+  host: 0.0.0.0
+  port: 8000
+bad_patterns:
+  - .env
+prefix_patterns:
+  - /config
+  - /.git
+  - /..
+  - /etc
+  - /.aws
