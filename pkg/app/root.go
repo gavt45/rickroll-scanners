@@ -51,6 +51,12 @@ func (r *rickrollApp) defaultHandler(w http.ResponseWriter, req *http.Request) {
 	rickrolls.RickRolls[rr](w, req)
 }
 
+func (r *rickrollApp) notFoundHandler(w http.ResponseWriter, req *http.Request) {
+	log.Printf("not found: %s %s %s %s %s\n", req.RemoteAddr, req.Method, req.URL.Path, req.Proto, req.Header.Get("User-Agent"))
+
+	w.Write([]byte("404 page not found"))
+}
+
 func (r *rickrollApp) loggerMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%s %s %s %s %s\n", r.RemoteAddr, r.Method, r.URL.Path, r.Proto, r.Header.Get("User-Agent"))
@@ -62,13 +68,15 @@ func (r *rickrollApp) loggerMiddleware(next http.Handler) http.Handler {
 func (r *rickrollApp) initHandlers() {
 	r.mux.Use(r.loggerMiddleware)
 
-	for _, pattern := range r.cfg.BadPatterns {
+	for _, pattern := range r.cfg.BadPaths {
 		r.mux.HandleFunc(pattern, r.defaultHandler)
 	}
 
-	for _, prefix := range r.cfg.PrefixPatterns {
+	for _, prefix := range r.cfg.BadPathPrefixes {
 		r.mux.PathPrefix(prefix).HandlerFunc(r.defaultHandler)
 	}
+
+	r.mux.NotFoundHandler = http.HandlerFunc(r.notFoundHandler)
 }
 
 func (r *rickrollApp) runServer(ctx context.Context) error {

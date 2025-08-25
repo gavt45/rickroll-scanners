@@ -17,10 +17,9 @@ type AppConfig struct {
 	Server Server `json:"server" yaml:"server"`
 
 	// BadPatterns is a list of patterns for http request handler
-	// see https://pkg.go.dev/net/http#hdr-Patterns-ServeMux
-	BadPatterns []string `json:"bad_patterns" yaml:"bad_patterns"`
-
-	PrefixPatterns []string `json:"prefix_patterns" yaml:"prefix_patterns"`
+	// see https://pkg.go.dev/github.com/gorilla/mux#Route.Path
+	BadPaths        []string `json:"paths" yaml:"paths"`
+	BadPathPrefixes []string `json:"path_prefixes" yaml:"path_prefixes"`
 }
 
 var DefaultConfig = &AppConfig{
@@ -29,8 +28,8 @@ var DefaultConfig = &AppConfig{
 		Host:      "0.0.0.0",
 		Port:      8000,
 	},
-	BadPatterns: []string{},
-	PrefixPatterns: []string{
+	BadPaths: []string{},
+	BadPathPrefixes: []string{
 		"/",
 	},
 }
