@@ -20,6 +20,11 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.24'
-
-    - name: Lint and build
-      run: make lint prebuild build-linux
+    
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v8
+      with:
+        version: v2.1
+    
+    - name: Build
+      run: make prebuild build-linux
